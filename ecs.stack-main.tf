@@ -200,7 +200,7 @@ module security-group {
 
 
 
-resource "aws_iam_role" "cluster-ec2-role" {
+resource aws_iam_role cluster-ec2-role {
   name = "cluster-worker-role-${ var.in_timestamp }"
 
   assume_role_policy = <<EOF
@@ -220,16 +220,16 @@ resource "aws_iam_role" "cluster-ec2-role" {
 EOF
 }
 
-resource "aws_iam_instance_profile" "cluster-ec2-role" {
+resource aws_iam_instance_profile cluster-ec2-role {
 
     name = "ecs-ec2-profile-${ var.in_timestamp }"
-    role = "${aws_iam_role.cluster-ec2-role.name}"
+    role = aws_iam_role.cluster-ec2-role.name
 }
 
-resource "aws_iam_role_policy" "cluster-ec2-role" {
+resource aws_iam_role_policy cluster-ec2-role {
 
     name = "cluster-ec2-role-policy"
-    role = "${aws_iam_role.cluster-ec2-role.id}"
+    role = aws_iam_role.cluster-ec2-role.id
 
   policy = <<EOF
 {
@@ -257,6 +257,9 @@ resource "aws_iam_role_policy" "cluster-ec2-role" {
 }
 EOF
 }
+
+
+
 
 /*
               "ecs:CreateCluster",
