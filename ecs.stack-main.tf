@@ -15,7 +15,7 @@ module ecs-cluster {
 
     in_ecs_task_role_arn     = module.ecs-role-profile.out_ecs_task_role_arn
     in_container_definitions = var.in_container_definitions
-    in_target_group_ids      =  module.load-balancers.out_target_group_ids
+    in_target_group_ids      = module.load-balancers.out_target_group_ids
 
     in_http_listener  = module.load-balancers.out_http_listener
     in_https_listener = module.load-balancers.out_https_listener
@@ -83,7 +83,7 @@ module auto-scaling {
     in_ami_id              = var.in_ami_id
     in_instance_type       = "t2.xlarge"
 
-###############################    in_instance_profile_id = module.ec2-role-profile.out_instance_profile_id
+    in_instance_profile_id = module.ec2-role-profile.out_instance_profile_id
 
 ##### Rollback to the boring old non-json roles - but they work
 ##### Rollback to the boring old non-json roles - but they work
@@ -91,7 +91,7 @@ module auto-scaling {
 ##### Rollback to the boring old non-json roles - but they work
 ##### Rollback to the boring old non-json roles - but they work
 
-    in_instance_profile_id = aws_iam_instance_profile.cluster-ec2-role.id
+############################    in_instance_profile_id = aws_iam_instance_profile.cluster-ec2-role.id
 
     in_security_group_id   = module.security-group.out_security_group_id
     in_subnet_ids          = module.vpc-network.out_public_subnet_ids
