@@ -78,11 +78,11 @@ variable in_dns_names {
 }
 
 
-### #################################### ###
-### [[variable]] in_security_group_rules ###
-### #################################### ###
+### ############################## ###
+### [[variable]] in_security_rules ###
+### ############################## ###
 
-variable in_security_group_rules {
+variable in_security_rules {
     description = "The human friendly one word rule list of the traffic types that will gain ingress access."
     type = list
 }
@@ -112,7 +112,6 @@ variable in_docker_managed_volumes {
 }
 
 
-
 ### ################### ###
 ### in_ecs_policy_stmts ###
 ### ################### ###
@@ -121,6 +120,7 @@ variable in_ecs_policy_stmts {
 
     description = "The Policy statements defining the AWS resource access the ec2 instances will enjoy."
 }
+
 
 ### ###########]####### ###
 ### in_ec2_policy_stmts ###

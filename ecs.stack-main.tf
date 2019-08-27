@@ -80,23 +80,14 @@ module auto-scaling {
 
     source = "github.com/devops4me/terraform-aws-ec2-auto-scaling"
 
-    in_ami_id              = var.in_ami_id
-    in_instance_type       = "t2.xlarge"
+    in_ami_id         = var.in_ami_id
+    in_ssh_public_key = var.in_ssh_public_key
+    in_instance_type  = "t2.xlarge"
 
     in_instance_profile_id = module.ec2-role-profile.out_instance_profile_id
-
-##### Rollback to the boring old non-json roles - but they work
-##### Rollback to the boring old non-json roles - but they work
-##### Rollback to the boring old non-json roles - but they work
-##### Rollback to the boring old non-json roles - but they work
-##### Rollback to the boring old non-json roles - but they work
-
-############################    in_instance_profile_id = aws_iam_instance_profile.cluster-ec2-role.id
-
     in_security_group_id   = module.security-group.out_security_group_id
     in_subnet_ids          = module.vpc-network.out_public_subnet_ids
     in_user_data_script    = module.ecs-cluster.out_user_data_script
-    in_ssh_public_key      = var.in_ssh_public_key
 
     in_ecosystem_name  = var.in_ecosystem
     in_tag_timestamp   = var.in_timestamp
@@ -123,7 +114,6 @@ module load-balancers {
     in_health_check_uris  = var.in_health_check_uris
     in_dns_names          = var.in_dns_names
     in_vpc_id             = module.vpc-network.out_vpc_id
-
     in_security_group_ids = [ module.security-group.out_security_group_id ]
     in_subnet_ids         = module.vpc-network.out_public_subnet_ids
 
@@ -189,7 +179,7 @@ module vpc-network {
 module security-group {
 
     source     = "github.com/devops4me/terraform-aws-security-group"
-    in_ingress = var.in_security_group_rules
+    in_ingress = var.in_security_rules
     in_vpc_id  = module.vpc-network.out_vpc_id
 
     in_ecosystem_name  = var.in_ecosystem
@@ -197,88 +187,3 @@ module security-group {
     in_tag_description = var.in_description
     in_mandatory_tags  = var.in_mandatory_tags
 }
-
-
-
-resource aws_iam_role cluster-ec2-role {
-  name = "cluster-worker-role-${ var.in_timestamp }"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "ec2.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-}
-
-resource aws_iam_instance_profile cluster-ec2-role {
-
-    name = "ecs-ec2-profile-${ var.in_timestamp }"
-    role = aws_iam_role.cluster-ec2-role.name
-}
-
-resource aws_iam_role_policy cluster-ec2-role {
-
-    name = "cluster-ec2-role-policy"
-    role = aws_iam_role.cluster-ec2-role.id
-
-  policy = <<EOF
-{
-    "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Effect": "Allow",
-            "Action": [
-              "ecs:CreateCluster",
-              "ecs:DeregisterContainerInstance",
-              "ecs:DiscoverPollEndpoint",
-              "ecs:Poll",
-              "ecs:RegisterContainerInstance",
-              "ecs:StartTelemetrySession",
-              "ecs:Submit*",
-              "ecs:StartTask",
-              "ecr:*",
-              "s3:*",
-              "logs:CreateLogStream",
-              "logs:PutLogEvents"
-            ],
-            "Resource": "*"
-        }
-    ]
-}
-EOF
-}
-
-
-
-
-/*
-              "ecs:CreateCluster",
-              "ecs:DeregisterContainerInstance",
-              "ecs:DiscoverPollEndpoint",
-              "ecs:Poll",
-              "ecs:RegisterContainerInstance",
-              "ecs:StartTelemetrySession",
-              "ecs:Submit*",
-              "ecs:StartTask",
-              "ecr:GetAuthorizationToken",
-              "ecr:BatchCheckLayerAvailability",
-              "ecr:GetDownloadUrlForLayer",
-              "ecr:BatchGetImage",
-              "ecr:PutImage",
-              "ecr:InitiateLayerUpload",
-              "ecr:UploadLayerPart",
-              "ecr:CompleteLayerUpload",
-              "s3:*",
-              "logs:CreateLogStream",
-              "logs:PutLogEvents"
-*/
