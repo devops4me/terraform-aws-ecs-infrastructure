@@ -12,7 +12,6 @@ module ecs-cluster {
 
     in_workload_names = var.in_workload_names
     in_workload_ports = var.in_workload_ports
-    in_workload_data  = var.in_workload_data
 
     in_ecs_task_role_arn     = module.ecs-role-profile.out_ecs_task_role_arn
     in_container_definitions = var.in_container_definitions
