@@ -33,3 +33,16 @@ output out_private_subnet_ids {
 
     value = module.vpc-network.out_private_subnet_ids
 }
+
+
+/*
+ | --
+ | -- The list of public subnet ( aggregation ) identifiers
+ | -- that span the availability zones thus providing resilience
+ | -- reliability and redundancy to the infrastructure stack.
+ | --
+*/
+output out_public_subnet_ids {
+
+    value = module.vpc-network.out_public_subnet_ids
+}
