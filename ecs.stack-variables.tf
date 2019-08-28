@@ -4,6 +4,16 @@
 ################ ###################################################### ########
 
 
+### ################ ###
+### in_workload_data ###
+### ################ ###
+
+variable in_workload_data {
+    description = "The values in this map will be interpolated to replace container workload definition keys."
+    type = map
+}
+
+
 ### ################# ###
 ### in_workload_names ###
 ### ################# ###
