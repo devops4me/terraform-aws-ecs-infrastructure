@@ -158,8 +158,8 @@ module vpc-network {
 
     source                 = "github.com/devops4me/terraform-aws-vpc-network"
     in_vpc_cidr            = "10.66.0.0/16"
-    in_num_public_subnets  = 3
-    in_num_private_subnets = 3
+    in_num_public_subnets  = 2
+    in_num_private_subnets = 2
 
     in_ecosystem_name  = var.in_ecosystem
     in_tag_timestamp   = var.in_timestamp
