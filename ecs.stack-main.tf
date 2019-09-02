@@ -92,7 +92,7 @@ module auto-scaling {
     in_ecosystem_name  = var.in_ecosystem
     in_tag_timestamp   = var.in_timestamp
     in_tag_description = var.in_description
-    in_mandatory_tags  = var.in_mandatory_tags
+    in_mandated_tags  = var.in_mandated_tags
 
 }
 
@@ -117,10 +117,10 @@ module load-balancers {
     in_security_group_ids = [ module.security-group.out_security_group_id ]
     in_subnet_ids         = module.vpc-network.out_public_subnet_ids
 
-    in_ecosystem_name  = var.in_ecosystem
-    in_tag_timestamp   = var.in_timestamp
-    in_tag_description = var.in_description
-    in_mandatory_tags  = var.in_mandatory_tags
+    in_mandated_tags = var.in_mandated_tags
+    in_ecosystem      = var.in_ecosystem
+    in_timestamp      = var.in_timestamp
+    in_description    = var.in_description
 
 }
 
@@ -156,7 +156,10 @@ module dns-mapping {
 */
 module vpc-network {
 
-    source                 = "github.com/devops4me/terraform-aws-vpc-network"
+    source                 = "./../vpc-network"
+
+####################    source                 = "github.com/devops4me/terraform-aws-vpc-network"
+
     in_vpc_cidr            = "10.66.0.0/16"
     in_num_public_subnets  = 2
     in_num_private_subnets = 2
@@ -185,5 +188,5 @@ module security-group {
     in_ecosystem_name  = var.in_ecosystem
     in_tag_timestamp   = var.in_timestamp
     in_tag_description = var.in_description
-    in_mandatory_tags  = var.in_mandatory_tags
+    in_mandated_tags  = var.in_mandated_tags
 }
