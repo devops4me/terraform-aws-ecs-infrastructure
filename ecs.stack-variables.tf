@@ -4,6 +4,27 @@
 ################ ###################################################### ########
 
 
+
+
+variable in_vpc_id {
+   description = "The ID of the existing VPC in which to create the subnet network."
+}
+
+variable in_private_subnet_ids {
+    description = "The private subnet IDS in every availability zone of this VPC."
+}
+
+
+variable in_public_subnet_ids {
+    description = "The public subnet IDS in every availability zone of this VPC."
+}
+
+
+
+
+
+
+
 ### ################# ###
 ### in_workload_names ###
 ### ################# ###

@@ -31,7 +31,7 @@ output out_security_group_id {
 */
 output out_private_subnet_ids {
 
-    value = module.vpc-network.out_private_subnet_ids
+    value = var.in_private_subnet_ids
 }
 
 
@@ -44,5 +44,5 @@ output out_private_subnet_ids {
 */
 output out_public_subnet_ids {
 
-    value = module.vpc-network.out_public_subnet_ids
+    value = var.in_public_subnet_ids
 }

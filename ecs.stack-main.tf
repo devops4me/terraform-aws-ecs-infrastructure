@@ -23,9 +23,10 @@ module ecs-cluster {
     in_host_managed_volumes   = var.in_host_managed_volumes
     in_docker_managed_volumes = var.in_docker_managed_volumes
 
-    in_ecosystem   = var.in_ecosystem
-    in_timestamp   = var.in_timestamp
-    in_description = var.in_description
+    in_mandated_tags = var.in_mandated_tags
+    in_ecosystem     = var.in_ecosystem
+    in_timestamp     = var.in_timestamp
+    in_description   = var.in_description
 }
 
 
@@ -86,7 +87,7 @@ module auto-scaling {
 
     in_instance_profile_id = module.ec2-role-profile.out_instance_profile_id
     in_security_group_id   = module.security-group.out_security_group_id
-    in_subnet_ids          = module.vpc-network.out_public_subnet_ids
+    in_subnet_ids          = var.in_private_subnet_ids
     in_user_data_script    = module.ecs-cluster.out_user_data_script
 
     in_ecosystem_name  = var.in_ecosystem
@@ -95,6 +96,7 @@ module auto-scaling {
     in_mandated_tags  = var.in_mandated_tags
 
 }
+
 
 
 /*
@@ -113,9 +115,9 @@ module load-balancers {
     in_service_protocols  = var.in_service_protocols
     in_health_check_uris  = var.in_health_check_uris
     in_dns_names          = var.in_dns_names
-    in_vpc_id             = module.vpc-network.out_vpc_id
+    in_vpc_id             = var.in_vpc_id
     in_security_group_ids = [ module.security-group.out_security_group_id ]
-    in_subnet_ids         = module.vpc-network.out_public_subnet_ids
+    in_subnet_ids         = var.in_public_subnet_ids
 
     in_mandated_tags = var.in_mandated_tags
     in_ecosystem      = var.in_ecosystem
@@ -147,32 +149,6 @@ module dns-mapping {
 
 /*
  | --
- | -- This robust module sets up the network infrastructure. It deals out
- | -- subnets in a round robin fashion sliding them into availability zones.
- | --
- | -- The module employs terraform's CIDR calculation function so that each
- | -- subnet can issue a number of IP addresses suitable for the context.
- | --
-*/
-module vpc-network {
-
-    source                 = "./../vpc-network"
-
-####################    source                 = "github.com/devops4me/terraform-aws-vpc-network"
-
-    in_vpc_cidr            = "10.66.0.0/16"
-    in_num_public_subnets  = 2
-    in_num_private_subnets = 2
-
-    in_ecosystem_name  = var.in_ecosystem
-    in_tag_timestamp   = var.in_timestamp
-    in_tag_description = var.in_description
-}
-
-
-
-/*
- | --
  | -- You can do away with long repeating and hard to read security group
  | -- declarations in favour of a succinct one word security group rule
  | -- definition. This module understands the common traffic protocols like
@@ -183,10 +159,54 @@ module security-group {
 
     source     = "github.com/devops4me/terraform-aws-security-group"
     in_ingress = var.in_security_rules
-    in_vpc_id  = module.vpc-network.out_vpc_id
+    in_vpc_id  = var.in_vpc_id
 
     in_ecosystem_name  = var.in_ecosystem
     in_tag_timestamp   = var.in_timestamp
     in_tag_description = var.in_description
     in_mandated_tags  = var.in_mandated_tags
 }
+
+
+module ec2-instance {
+
+    source                  = "github.com/devops4me/terraform-aws-ec2-instance-cluster"
+
+    in_node_count           = 1
+    in_iam_instance_profile = module.ec2-role-profile.out_instance_profile_id
+    in_ssh_public_key       = var.in_ssh_public_key
+
+    in_ami_id               = data.aws_ami.ubuntu-1804.id
+    in_subnet_ids           = var.in_public_subnet_ids
+    in_security_group_ids   = [ module.security-group.out_security_group_id ]
+
+    in_ecosystem_name       = var.in_ecosystem
+    in_tag_timestamp        = var.in_timestamp
+    in_tag_description      = var.in_description
+    in_mandated_tags        = var.in_mandated_tags
+}
+
+/*
+ | --
+ | -- Use the AMI data filter to find the ID of the Ubuntu 18.04 image
+ | -- within the region that we are currently in.
+ | --
+*/
+data aws_ami ubuntu-1804 {
+
+    most_recent = true
+
+    filter {
+        name   = "name"
+        values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
+    }
+
+    filter {
+        name   = "virtualization-type"
+        values = [ "hvm" ]
+    }
+
+    owners = [ "099720109477" ]
+}
+
+
